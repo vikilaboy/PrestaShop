@@ -1067,4 +1067,21 @@ class ValidateCore
 	{
 		return (preg_match('/^[0-1]\.[0-9]{1,2}(\.[0-9]{1,2}){0,2}$/', $version) && ip2long($version));
 	}
+
+	/**
+	* Check for CNP validity.
+	*
+	* @param string $cnp to validate
+	* @return boolean Validity is ok or not
+	*/
+	public static function isCnp($cnp)
+	{
+        if(!is_numeric($cnp) || strlen($cnp) != 13 || !checkdate(substr($cnp,3,2),substr($cnp,5,2),substr($cnp,1,2))) return false; 
+        $key = '279146358279';
+        $sum = 0; 
+        for($i=0;$i < 12;$i++) 
+            $sum += $cnp[$i]*$key[$i]; 
+        $rest = ($sum % 11 == 10)? 1 : $sum % 11; 
+        return(($rest == $cnp[12]) ? true : false);
+	}
 }
